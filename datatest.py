@@ -54,8 +54,3 @@ model(knowledge,roadConstruction)
 #We could make deduction using hypothesis
 
 #print(knowledge.formula())
-"""
-    Scenario 1: It’s raining, and there’s heavy traffic. Check if the assistant suggests working from home or driving.
-    Scenario 2: There’s a public transport strike, and it’s not raining. Check if the assistant still suggests taking public transport.
-    Scenario 3: There’s no rain, traffic is light, and there’s no strike. Check if the assistant suggests driving or taking public transport.
-"""
