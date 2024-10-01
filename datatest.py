@@ -8,8 +8,15 @@ strike = Symbol("Strike")
 wfh = Symbol("WFH")
 drive = Symbol("Drive")
 publicTransport = Symbol("PublicTransport")
+appointment = Symbol("Appointment")
+roadConstruction = Symbol("RoadConstruction")
 
-knowledge = {(Implication(Or(rain,earlyMeeting),wfh)), (Implication(And(Not(rain),Not(heavyTraffic)),drive)), Implication(And(Not(strike),Not(rain)),publicTransport)}
+#Give the good way of moving depending on conditions
+knowledge = {(Implication(Or(rain,earlyMeeting),wfh)),
+            (Implication(And(Not(rain),Not(heavyTraffic)),drive)),
+            Implication(And(Not(strike),Not(rain)),publicTransport),
+            Implication(appointment,drive),
+            Implication(roadConstruction,Not(drive))}
 
 #this function create a model using your conditions and knowledge then suggest what you should do
 def model(knowledge,conditions):
@@ -36,6 +43,15 @@ model(knowledge,And((strike),Not((rain))))
 print('\n Scenario 3 : \n')
 model(knowledge,And(Not((rain)),Not((heavyTraffic)),Not(strike)))
 #Both option respects conditions, so they are both given.
+
+print('\n Scenario 4 : \n')
+model(knowledge,And(rain,heavyTraffic,appointment))
+#To make something really logic we should make a priority depending on the customer needs
+#This version of the program is easy to adapt according to priority, we could also focus on time/comfort/envirronment/mixe
+
+print('\n Scenario 5 : \n')
+model(knowledge,roadConstruction)
+#We could make deduction using hypothesis
 
 #print(knowledge.formula())
 """
