@@ -9,24 +9,37 @@ wfh = Symbol("WFH")
 drive = Symbol("Drive")
 publicTransport = Symbol("PublicTransport")
 
-#knowledge = (Or(Implication(Or(rain,earlyMeeting)),wfh),(Implication(And(not(rain),not(earlyMeeting))),drive))
-# If it's raining or there’s an early meeting, you should work from home.
-# If it’s not raining and there’s no heavy traffic, you should drive.
-# If there’s no strike and it’s not raining, you should take public transport.
 knowledge = {(Implication(Or(rain,earlyMeeting),wfh)), (Implication(And(Not(rain),Not(heavyTraffic)),drive)), Implication(And(Not(strike),Not(rain)),publicTransport)}
 
+#this function create a model using your conditions and knowledge then suggest what you should do
 def model(knowledge,conditions):
-    return And(knowledge,conditions)
-
-
-for x in knowledge:
-    #test = model(x,And(Not(rain),earlyMeeting))
-    #test = model(x,And(Not(rain),Not(heavyTraffic)))
-    test = model(x,And(Not(rain),Not(strike)))
-    print(test.formula())
-    print("Should I work from home ? :",model_check(test, wfh))
-    print("Should I drive ? :",model_check(test, drive))    
-    print("Should I take public transports ? :",model_check(test, publicTransport))
+    #print("How should i prepare to work ?")
+    for x in knowledge:
+        mod = And(x,conditions)
+        #print(conditions)
+        if model_check(mod, wfh):
+            print("You should work from home")
+        if model_check(mod, drive):
+            print("You should drive to work")    
+        if model_check(mod, publicTransport):
+            print("You should take public transports")
     
+model(knowledge,And(Not(rain),Not(strike)))
+print('\n Scenario 1 : \n')
+model(knowledge,And((rain),(heavyTraffic)))
+
+print('\n Scenario 2 : \n')
+model(knowledge,And((strike),Not((rain))))
+#We miss trafic knowledge to know the answer
+#As priority is not defined even working from is not suggested
+
+print('\n Scenario 3 : \n')
+model(knowledge,And(Not((rain)),Not((heavyTraffic)),Not(strike)))
+#Both option respects conditions, so they are both given.
+
 #print(knowledge.formula())
-#print(model_check(knowledge, rain))
+"""
+    Scenario 1: It’s raining, and there’s heavy traffic. Check if the assistant suggests working from home or driving.
+    Scenario 2: There’s a public transport strike, and it’s not raining. Check if the assistant still suggests taking public transport.
+    Scenario 3: There’s no rain, traffic is light, and there’s no strike. Check if the assistant suggests driving or taking public transport.
+"""
